@@ -16,7 +16,6 @@ apt install ${depList[@]} -y
 ufw allow 25565
 mkdir ~/servers/minecraft && cd ~/servers/minecraft
 wget ${MINECRAFT_BINARY_URL}
-echo eula=true > eula.txt
 
 ### leaving start command commented out
 # java -Xmx1024M -Xms1024M -jar server.jar nogui
