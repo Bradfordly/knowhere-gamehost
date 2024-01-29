@@ -35,8 +35,11 @@ apt update && apt install ${depList[@]} -y
 curl -Lo linuxgsm.sh https://linuxgsm.sh
 chmod +x linuxgsm.sh
 
+### get secrets
+# TODO: setup ssm parameter store
+
 ### palworld setup
-ufw allow 2811
+ufw allow 8211
 adduser pwserver
 echo "pwserver:${pwserver}" | chpasswd
 bash linuxgsm.sh pwserver
@@ -46,7 +49,6 @@ ufw allow 25565
 adduser mcserver
 echo "mcserver:${mcserver}" | chpasswd
 bash linuxgsm.sh mcserver
-
 # TODO: locate mc install directory from linux gsm
 #aws s3 cp ${S3_BUCKET_NAME}${MINECRAFT_SAVE_FILE} ${MINECRAFT_SAVE_FILE}
 #unzip ${MINECRAFT_SAVE_FILE}
@@ -56,4 +58,5 @@ bash linuxgsm.sh mcserver
 #sed 's/difficulty=easy/difficulty=normal/g' server.properties
 #sed 's/view-distance=10/view-distance=30/g' server.properties
 
-### dynamic dns (update route53 cname record w/ new ec2 public dns)
+### dynamic dns (update cname record w/ new ec2 public dns)
+# TODO: setup cloudflare api access
