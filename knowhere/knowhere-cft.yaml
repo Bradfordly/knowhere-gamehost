@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Knowhere EC2 Stack CFT
+
+Parameters:
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: knowhere-ssh-keypair
+  InstanceType:
+    Description: Knowhere EC2 instance type
+    Type: String
+    Default: m5.large
+    AllowedValues: [m5.large]
+  LatestAmiId:
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/canonical/ubuntu/server/jammy/stable/current/amd64/hvm/ebs-gp2/ami-id'
+  UserData:
+    Type: String
+
+Resources:
+  knowhereInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: iam-knowhere-access
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: 'Allow'
+          Principal:
+            Service:
+            - 'ec2.amazonaws.com'
+          Action:
+          - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        - 'arn:aws:iam::aws:policy/SecretsManagerReadWrite'
+  knowhereInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: '/'
+      Roles:
+      - !Ref knowhereInstanceRole
+  knowhereSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupName: "Knowhere EC2 Access"
+            GroupDescription: "Allows specific traffic in/out for SSH and game servers"
+            SecurityGroupIngress:
+              - IpProtocol: tcp
+                FromPort: 22
+                ToPort: 22
+                CidrIp: 0.0.0.0/0
+                Description: SSH
+              - IpProtocol: tcp
+                FromPort: 25565
+                ToPort: 25565
+                CidrIp: 0.0.0.0/0
+                Description: Minecraft
+              - IpProtocol: tcp
+                FromPort: 8211
+                ToPort: 8211
+                CidrIp: 0.0.0.0/0
+                Description: Palworld
+  knowhereEc2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: !Ref KeyName
+      IamInstanceProfile: !Ref knowhereInstanceProfile
+      SecurityGroups:
+        - !Ref knowhereSecurityGroup
+      UserData: !Ref UserData
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref LatestAmiId
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeType: gp2
+            VolumeSize: '30'
+            DeleteOnTermination: 'true'
+            Encrypted: 'true'
+      Tags:
+        - Key: Name
+          Value: knowhere
+  
