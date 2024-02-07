@@ -2,6 +2,7 @@
 
 ### config ###
 S3_BUCKET_NAME="s3://bradfordly-things"
+LGSM_DIR="/opt/linuxgsm/linuxgsm.sh"
 MINECRAFT_SAVE_FILE="/games/saves/minecraft/ce_plays_mc.zip"
 PALWORLD_SAVE_FILE="/games/saves/palworld/ce_plays_pw.zip"
 
@@ -34,9 +35,11 @@ apt update && apt install ${depList[@]} -y
 ### linuxgsm setup
 curl -Lo linuxgsm.sh https://linuxgsm.sh
 chmod +x linuxgsm.sh
+mv linuxgsm.sh ${LGSM_DIR}
+cd ${LGSM_DIR}
 
 ### get secrets
-# TODO: setup ssm parameter store
+secret=$(aws ssm get-parameter --name "MyStringParameter")
 
 ### palworld setup
 ufw allow 8211
