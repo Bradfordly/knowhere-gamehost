@@ -2,6 +2,19 @@
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "allows access to s3",
+            "Effect":"Allow",
+            "Action":[
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:GetObjectVersion",
+                "s3:DeleteObject",
+                "s3:DeleteObjectVersion"
+            ],
+            "Resource":"arn:aws:s3:::bradfordly-things/gamehost/*"
+        },
+        {
+            "Sid": "allows ssm agent to access parameter store",
             "Effect": "Allow",
             "Action": [
                 "ssm:DescribeParameters"
@@ -9,6 +22,7 @@
             "Resource": "*"
         },
         {
+            "Sid": "allows ssm agent to read specific parameters",
             "Effect": "Allow",
             "Action": [
                 "ssm:GetParameters"
@@ -16,6 +30,7 @@
             "Resource": "arn:aws:ssm:us-east-2:123456789012:parameter/prod-*"
         },
         {
+            "Sid": "allows access to kms",
             "Effect": "Allow",
             "Action": [
                 "kms:Decrypt",
@@ -25,6 +40,17 @@
             ],
             "Resource": [
                 "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-12345EXAMPLE"
+            ]
+        },
+        {
+            "Sid": "allows access to update route53 record set",
+            "Effect": "Allow",
+            "Action": [
+                "route53:ChangeResourceRecordSets"
+                                
+            ],
+            "Resource": [
+                "*"
             ]
         }
     ]
