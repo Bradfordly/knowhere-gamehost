@@ -66,7 +66,6 @@ done
 aws s3 cp ${S3_BUCKET_NAME}/${MINECRAFT_SAVE_FILE} ${MINECRAFT_SAVE_FILE}
 unzip ${MINECRAFT_SAVE_FILE}
 rm ${MINECRAFT_SAVE_FILE}
-sed 's/false/true/g' eula.txt
 sed 's/level-name=minecraft/level-name=ce_plays_mc/g' server.properties
 sed 's/difficulty=easy/difficulty=normal/g' server.properties
 sed 's/view-distance=10/view-distance=30/g' server.properties
