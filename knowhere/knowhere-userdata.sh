@@ -8,6 +8,19 @@ LGSM_DIR="/opt/linuxgsm/linuxgsm.sh"
 MINECRAFT_SAVE_FILE="games/saves/minecraft/ce_plays_mc.zip"
 PALWORLD_SAVE_FILE="games/saves/palworld/ce_plays_pw.zip"
 
+### admin setup ###
+sc=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/${SECRET_NAME}")
+userList=(
+    bolson
+    stenborg
+)
+for user in ${userList}
+do
+    adduser $user
+    echo "$user:${sc[$user]}" | chpasswd
+    usermod -aG sudo $user
+done
+
 ### install dependencies ###
 depList=(
     curl
@@ -47,15 +60,13 @@ serverList[pwserver]=8211 #palworld
 serverList[mcserver]=25565 #minecraft
 
 ### install game servers ###
-pw=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/${SECRET_NAME}")
 for server in "${!serverList[@]}"
 do
     adduser $server
-    echo "$server:${pw[$server]}" | chpasswd
+    echo "$server:${sc[$server]}" | chpasswd
     ufw allow ${serverList[$server]}
     bash linuxgsm.sh $server
     bash $server auto-install
-    # TODO: automate installation
 done
 
 ### palworld setup ###
