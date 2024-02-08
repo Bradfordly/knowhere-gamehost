@@ -35,18 +35,18 @@ dpkg --add-architecture i386
 apt update
 apt install ${depList[@]} -y
 
-### linuxgsm setup
+### linuxgsm setup ###
 curl -Lo linuxgsm.sh https://linuxgsm.sh
 chmod +x linuxgsm.sh
 mv linuxgsm.sh ${LGSM_DIR}
 cd ${LGSM_DIR}
 
-### define game list
+### define game list ###
 declare -A serverList
 serverList[pwserver]=8211 #palworld
 serverList[mcserver]=25565 #minecraft
 
-### install game servers
+### install game servers ###
 pw=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/${SECRET_NAME}")
 for server in "${!serverList[@]}"
 do
@@ -58,10 +58,10 @@ do
     # TODO: automate installation
 done
 
-### palworld setup
+### palworld setup ###
 # TODO: import save file
 
-### minecraft setup
+### minecraft setup ###
 # TODO: locate mc install directory from linux gsm
 aws s3 cp ${S3_BUCKET_NAME}/${MINECRAFT_SAVE_FILE} ${MINECRAFT_SAVE_FILE}
 unzip ${MINECRAFT_SAVE_FILE}
@@ -71,7 +71,7 @@ sed 's/level-name=minecraft/level-name=ce_plays_mc/g' server.properties
 sed 's/difficulty=easy/difficulty=normal/g' server.properties
 sed 's/view-distance=10/view-distance=30/g' server.properties
 
-### dynamic dns (update cname record w/ new ec2 public dns)
+### dynamic dns ###
 ec2Ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
 record=$(cat <<EOF
 {
