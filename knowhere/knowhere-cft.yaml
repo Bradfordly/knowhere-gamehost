@@ -2,9 +2,6 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: Knowhere EC2 Stack CFT
 
 Parameters:
-  KeyName:
-    Type: AWS::EC2::KeyPair::KeyName
-    Default: knowhere-ssh-keypair
   InstanceType:
     Description: Knowhere EC2 instance type
     Type: String
@@ -15,9 +12,15 @@ Parameters:
     Default: '/aws/service/canonical/ubuntu/server/jammy/stable/current/amd64/hvm/ebs-gp2/ami-id'
   UserData:
     Type: String
+  KMSKey:
+    Type: String
+  S3Bucket:
+    Type: String
+  ParameterStore:
+    Type: String
 
 Resources:
-  knowhereInstanceRole:
+  knowhereIAMRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: iam-knowhere-access
@@ -30,15 +33,50 @@ Resources:
             - 'ec2.amazonaws.com'
           Action:
           - 'sts:AssumeRole'
-      ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
-        - 'arn:aws:iam::aws:policy/SecretsManagerReadWrite'
+  
   knowhereInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Path: '/'
       Roles:
       - !Ref knowhereInstanceRole
+  
+  knowhereIAMPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: iam-knowhere-access-policy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "s3:PutObject"
+              - "s3:GetObject"
+              - "s3:GetObjectVersion"
+              - "s3:DeleteObject"
+              - "s3:DeleteObjectVersion"
+            Resource: !Ref S3Bucket
+          - Effect: Allow
+            Action:
+              - "route53:ChangeResourceRecordSets"
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - "ssm:DescribeParameters"
+            Resource: "*"
+          - Effect: Allow
+            Action:
+              - "ssm:GetParameters"
+            Resource: !Ref ParameterStore
+          - Effect: Allow
+            Action:
+              - "kms:Decrypt"
+              - "kms:Encrypt"
+              - "kms:GenerateDataKey"
+            Resource: !Ref KMSKey
+        Roles:
+          - !Ref knowhereIAMRole
+  
   knowhereSecurityGroup:
         Type: AWS::EC2::SecurityGroup
         Properties:
@@ -60,10 +98,10 @@ Resources:
                 ToPort: 8211
                 CidrIp: 0.0.0.0/0
                 Description: Palworld
+  
   knowhereEc2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      KeyName: !Ref KeyName
       IamInstanceProfile: !Ref knowhereInstanceProfile
       SecurityGroups:
         - !Ref knowhereSecurityGroup
