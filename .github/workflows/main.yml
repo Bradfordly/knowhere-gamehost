@@ -40,3 +40,8 @@ jobs:
           name: cft-knowhere-ec2
           capabilities: CAPABILITY_NAMED_IAM
           template: ${{ secrets.AWS_S3_URL }}/knowhere-cft.yaml
+      - name: delete failed stack
+        if: failure()
+        run: |
+          aws cloudformation delete-stack --stack-name my-stack cft-knowhere-ec2
+          
