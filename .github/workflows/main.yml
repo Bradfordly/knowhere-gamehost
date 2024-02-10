@@ -43,5 +43,5 @@ jobs:
       - name: delete failed stack
         if: failure()
         run: |
-          aws cloudformation delete-stack --stack-name my-stack cft-knowhere-ec2
+          aws cloudformation delete-stack --stack-name cft-knowhere-ec2
           
