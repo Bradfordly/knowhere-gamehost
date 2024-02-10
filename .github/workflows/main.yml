@@ -38,4 +38,5 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: cft-knowhere-ec2
+          capabilities: CAPABILITY_NAMED_IAM
           template: ${{ secrets.AWS_S3_URL }}/knowhere-cft.yaml
