@@ -51,7 +51,7 @@ Resources:
             Resource: "*"
           - Effect: Allow
             Action:
-              - "ssm:DescribeParameters",
+              - "ssm:DescribeParameters"
               - "ssm:GetParameters"
             Resource: "*"
           - Effect: Allow
