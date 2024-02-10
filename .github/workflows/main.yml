@@ -9,7 +9,7 @@ permissions:
       id-token: write
       contents: read
 jobs:
-  deploy cft stack to aws:
+  deploy_cft_stack:
     runs-on: ubuntu-latest
     outputs:
       env-name: ${{ steps.env-name.outputs.environment }}
