@@ -28,7 +28,7 @@ Resources:
     Properties:
       Path: '/'
       Roles:
-      - !Ref knowhereInstanceRole
+      - !Ref knowhereIAMRole
   
   knowhereIAMPolicy:
     Type: 'AWS::IAM::Policy'
