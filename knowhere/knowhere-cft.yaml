@@ -7,7 +7,7 @@ Parameters:
     Default: '/aws/service/canonical/ubuntu/server/jammy/stable/current/amd64/hvm/ebs-gp2/ami-id'
   S3Bucket:
     Type: String
-    Default: {{resolve:ssm-secure:/gamehost/s3bucket:2}}
+    Default: "{{resolve:ssm-secure:/gamehost/s3bucket:2}}"
 Resources:
   knowhereIAMRole:
     Type: AWS::IAM::Role
