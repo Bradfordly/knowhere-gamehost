@@ -1,2 +1,3 @@
-# bradfordly-games
-games.bradfordly.com - game hosting services
+# gamehost.bradfordly.com -- [v1.0](CHANGELOG.md)
+
+bradfordly.com submain hosting game server management and hosting services.
