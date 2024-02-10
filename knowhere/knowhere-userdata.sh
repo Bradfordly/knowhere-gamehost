@@ -1,25 +1,12 @@
 #!/bin/bash
 
 ### config ###
-S3_BUCKET_NAME="s3://bradfordly-things"
-SECRET_NAME="gamehost/knowhere/os"
-R53_HOSTEDZONE=""
+S3_BUCKET_NAME=$(aws ssm get-parameter --name "/gamehost/s3bucket")
+SECRET_PATH=$(aws ssm get-parameter --name "/gamehost/knowhere/secretPath")
+# R53_HOSTEDZONE=""
 LGSM_DIR="/opt/linuxgsm/linuxgsm.sh"
-MINECRAFT_SAVE_FILE="games/saves/minecraft/ce_plays_mc.zip"
-PALWORLD_SAVE_FILE="games/saves/palworld/ce_plays_pw.zip"
-
-### admin setup ###
-sc=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/${SECRET_NAME}")
-userList=(
-    bolson
-    stenborg
-)
-for user in ${userList}
-do
-    adduser $user
-    echo "$user:${sc[$user]}" | chpasswd
-    usermod -aG sudo $user
-done
+MINECRAFT_SAVE_FILE="/saves/minecraft/ce_plays_mc.zip"
+# PALWORLD_SAVE_FILE="/saves/palworld/ce_plays_pw.zip"
 
 ### install dependencies ###
 depList=(
@@ -63,6 +50,7 @@ serverList[mcserver]=25565 #minecraft
 for server in "${!serverList[@]}"
 do
     adduser $server
+    pw=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/${SECRET_PATH}/linuxgsm/${server}")
     echo "$server:${sc[$server]}" | chpasswd
     ufw allow ${serverList[$server]}
     bash linuxgsm.sh $server
@@ -82,25 +70,28 @@ sed 's/difficulty=easy/difficulty=normal/g' server.properties
 sed 's/view-distance=10/view-distance=30/g' server.properties
 
 ### dynamic dns ###
-ec2Ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
-record=$(cat <<EOF
-{
-  "Comment": "knowhere dynamic dns service",
-  "Changes": [
-    {
-      "Action": "UPSERT",
-      "ResourceRecordSet": {
-        "Name": "gamehost.bradfordly.com",
-        "Type": "A",
-        "AliasTarget": {
-          "HostedZoneId": ${R53_HOSTEDZONE},
-          "DNSName": ${ec2Ip},
-          "EvaluateTargetHealth": false
-        }
-      }
-    }
-  ]
-}
-EOF
-)
-aws route53 change-resource-record-sets --hosted-zone-id ${R53_HOSTEDZONE} --change-batch ${record}
+#
+# TODO: Route 53 Hosted Zone + Domain registry
+#
+# ec2Ip=`curl -sL http://169.254.169.254/latest/meta-data/public-ipv4`
+# record=$(cat <<EOF
+# {
+#   "Comment": "knowhere dynamic dns service",
+#   "Changes": [
+#     {
+#       "Action": "UPSERT",
+#       "ResourceRecordSet": {
+#         "Name": "gamehost.bradfordly.com",
+#         "Type": "A",
+#         "AliasTarget": {
+#           "HostedZoneId": ${R53_HOSTEDZONE},
+#           "DNSName": ${ec2Ip},
+#           "EvaluateTargetHealth": false
+#         }
+#       }
+#     }
+#   ]
+# }
+# EOF
+# )
+# aws route53 change-resource-record-sets --hosted-zone-id ${R53_HOSTEDZONE} --change-batch ${record}
