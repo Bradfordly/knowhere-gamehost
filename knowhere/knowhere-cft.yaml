@@ -29,7 +29,7 @@ Resources:
     Properties:
       Path: '/'
       Roles:
-      - !Ref knowhereIAMRole
+      - !GetAtt 'knowhereIAMRole.Arn'
   
   knowhereIAMPolicy:
     Type: 'AWS::IAM::Policy'
@@ -62,7 +62,7 @@ Resources:
               - "kms:GenerateDataKey"
             Resource: "*"
         Roles:
-          - !Ref knowhereIAMRole
+          - !GetAtt 'knowhereIAMRole.Arn'
   
   knowhereSecurityGroup:
         Type: AWS::EC2::SecurityGroup
