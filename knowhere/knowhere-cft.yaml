@@ -23,18 +23,9 @@ Resources:
             - 'ec2.amazonaws.com'
           Action:
           - 'sts:AssumeRole'
-  
-  knowhereInstanceProfile:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Path: '/'
-      Roles:
-      - !GetAtt 'knowhereIAMRole.Arn'
-  
-  knowhereIAMPolicy:
-    Type: 'AWS::IAM::Policy'
-    Properties:
-      PolicyName: iam-knowhere-access-policy
+    Path: '/'
+    Policies:
+    - PolicyName: iam-knowhere-access-policy
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -61,8 +52,13 @@ Resources:
               - "kms:Encrypt"
               - "kms:GenerateDataKey"
             Resource: "*"
-        Roles:
-          - !GetAtt 'knowhereIAMRole.Arn'
+  
+  knowhereInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: '/'
+      Roles:
+      - !GetAtt 'knowhereIAMRole.Arn'
   
   knowhereSecurityGroup:
         Type: AWS::EC2::SecurityGroup
