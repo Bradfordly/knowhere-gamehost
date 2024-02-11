@@ -23,7 +23,6 @@ Resources:
             - 'ec2.amazonaws.com'
           Action:
           - 'sts:AssumeRole'
-    Path: '/'
     Policies:
     - PolicyName: iam-knowhere-access-policy
       PolicyDocument:
