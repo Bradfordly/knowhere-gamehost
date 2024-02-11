@@ -13,7 +13,7 @@ Parameters:
     Default: "{{resolve:ssm:/gamehost/s3bucket/path:1}}"
   SSMPolicyArn:
     Type: String
-    Default: "{{resolve:ssm:/aws/iam/ssmManagedPolicyArn:1}}"
+    Default: "{{resolve:ssm:/managedPolicyArns/ssmEC2Role:1}}"
 
 Resources:
   knowhereIAMRole:
