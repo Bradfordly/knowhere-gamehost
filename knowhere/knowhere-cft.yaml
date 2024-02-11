@@ -60,7 +60,7 @@ Resources:
     Properties:
       Path: '/'
       Roles:
-        - !GetAtt 'knowhereIAMRole.Arn'
+        - !GetAtt 'knowhereIAMRole.RoleName'
   
   knowhereSecurityGroup:
         Type: AWS::EC2::SecurityGroup
