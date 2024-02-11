@@ -16,7 +16,7 @@ Resources:
   knowhereIAMRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: iam-knowhere-access
+      RoleName: 'iam-knowhere-access'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -27,7 +27,7 @@ Resources:
           Action:
           - 'sts:AssumeRole'
       Policies:
-      - PolicyName: iam-knowhere-access-policy
+      - PolicyName: 'iam-knowhere-access-policy'
         PolicyDocument:
           Version: "2012-10-17"
           Statement:
