@@ -58,9 +58,9 @@ Resources:
   knowhereInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
-      Path: '/'
+      Path: /
       Roles:
-        - !GetAtt 'knowhereIAMRole.RoleName'
+        - !Ref knowhereIAMRole
   
   knowhereSecurityGroup:
         Type: AWS::EC2::SecurityGroup
