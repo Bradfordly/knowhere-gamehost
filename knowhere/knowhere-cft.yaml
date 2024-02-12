@@ -5,9 +5,9 @@ Parameters:
   LatestAmiId:
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     Default: '/aws/service/canonical/ubuntu/server/jammy/stable/current/amd64/hvm/ebs-gp2/ami-id'
-  S3BucketPath:
+  UserdataS3BucketPath:
     Type: 'String'
-    Default: '{{resolve:ssm:/gamehost/s3bucket/path:1}}'
+    Default: '{{resolve:ssm:/gamehost/s3bucket/path/userdata:1}}'
   S3BucketArn:
     Type: 'String'
     Default: '{{resolve:ssm:/gamehost/s3bucket/arn:1}}'
@@ -92,13 +92,14 @@ Resources:
       SecurityGroups:
         - !Ref knowhereSecurityGroup
       UserData:
-        Fn::Base64: !Sub |
-          #!/bin/bash
-          apt update
-          apt install awscli -y
-          aws s3 cp ${S3BucketPath}/knowhere-userdata.sh /opt/knowhere-userdata.sh
-          chmod +x /opt/knowhere-userdata.sh
-          bash /opt/knowhere-userdata.sh
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            apt update
+            apt install awscli -y
+            aws s3 cp ${UserdataS3BucketPath} /opt/knowhere-userdata.sh
+            chmod +x /opt/knowhere-userdata.sh
+            bash /opt/knowhere-userdata.sh
       InstanceType: m5.large
       ImageId: !Ref LatestAmiId
       BlockDeviceMappings:
