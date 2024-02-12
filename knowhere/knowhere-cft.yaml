@@ -48,6 +48,7 @@ Resources:
               Action:
                 - "ssm:DescribeParameters"
                 - "ssm:GetParameters"
+                - "ssm:GetParameter"
               Resource: "*"
             - Effect: Allow
               Action:
@@ -70,10 +71,10 @@ Resources:
             GroupDescription: "Allows specific traffic in/out for SSH and game servers"
             SecurityGroupIngress:
               - IpProtocol: tcp
-                FromPort: 22
-                ToPort: 22
+                FromPort: 27015
+                ToPort: 27015
                 CidrIp: 0.0.0.0/0
-                Description: SSH
+                Description: Steam
               - IpProtocol: tcp
                 FromPort: 25565
                 ToPort: 25565
@@ -84,6 +85,11 @@ Resources:
                 ToPort: 8211
                 CidrIp: 0.0.0.0/0
                 Description: Palworld
+              - IpProtocol: tcp
+                FromPort: 1985
+                ToPort: 1985
+                CidrIp: 0.0.0.0/0
+                Description: Palworld2
   
   knowhereEc2Instance:
     Type: AWS::EC2::Instance

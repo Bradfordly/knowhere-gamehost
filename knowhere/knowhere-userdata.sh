@@ -29,10 +29,11 @@
 
 ### config ###
 echo 'setting environment configuration'
+AWS_DEFAULT_REGION=$(aws ssm get-parameter --name "defaultRegion")
 S3_BUCKET_NAME=$(aws ssm get-parameter --name "/gamehost/s3bucket")
 SECRET_PATH=$(aws ssm get-parameter --name "/gamehost/knowhere/secretPath")
 # R53_HOSTEDZONE=""
-LGSM_DIR="/opt/linuxgsm/linuxgsm.sh"
+LGSM_DIR="/opt/linuxgsm"
 # MINECRAFT_SAVE_FILE="/saves/minecraft/ce_plays_mc.zip"
 # PALWORLD_SAVE_FILE="/saves/palworld/ce_plays_pw.zip"
 echo 'environment configuration complete'
@@ -41,7 +42,8 @@ echo 'environment configuration complete'
 echo 'staging linuxgsm scripts'
 curl -Lo linuxgsm.sh https://linuxgsm.sh
 chmod +x linuxgsm.sh
-mv linuxgsm.sh ${LGSM_DIR}
+mkdir ${LGSM_DIR}
+mv linuxgsm.sh ${LGSM_DIR}/linuxgsm.sh
 cd ${LGSM_DIR}
 echo 'linuxgsm scripts staged successfully'
 
@@ -50,7 +52,7 @@ echo 'setting server list dictionary'
 declare -A serverList
 serverList[pwserver]=8211 #palworld
 serverList[mcserver]=25565 #minecraft
-echo 'server list dictionary set syccessfully'
+echo 'server list dictionary set successfully'
 
 ### install game servers ###
 for server in "${!serverList[@]}"
