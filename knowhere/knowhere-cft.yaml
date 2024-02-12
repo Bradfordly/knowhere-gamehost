@@ -6,7 +6,7 @@ Parameters:
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     Default: '/aws/service/canonical/ubuntu/server/jammy/stable/current/amd64/hvm/ebs-gp2/ami-id'
   S3BucketPath:
-    Type: 'AWS::SSM::Parameter::Value<String>'
+    Type: 'String'
     Default: '{{resolve:ssm:/gamehost/s3bucket/path:1}}'
   S3BucketArn:
     Type: 'String'
