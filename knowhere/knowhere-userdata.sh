@@ -22,7 +22,6 @@ depList=(
     lib32stdc++6
     libsdl2-2.0-0:i386
     steamcmd
-    awscli
 )
 dpkg --add-architecture i386
 apt update

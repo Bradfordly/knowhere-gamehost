@@ -46,10 +46,6 @@ Resources:
               Resource: !Sub '${S3BucketArn}/*'
             - Effect: Allow
               Action:
-                - "route53:ChangeResourceRecordSets"
-              Resource: "*"
-            - Effect: Allow
-              Action:
                 - "ssm:DescribeParameters"
                 - "ssm:GetParameters"
               Resource: "*"
@@ -96,10 +92,12 @@ Resources:
       SecurityGroups:
         - !Ref knowhereSecurityGroup
       UserData:
-          "Fn::Base64":
-            "Fn::Sub": |
-              #!/bin/bash
-              aws s3 cp ${S3BucketPath}/knowhere-userdata.sh - | bash -s
+        "Fn::Base64":
+          "Fn::Sub": |
+            #!/bin/bash
+            apt update
+            apt install awscli -y
+            aws s3 cp ${S3BucketPath}/knowhere-userdata.sh - | bash -s
       InstanceType: m5.large
       ImageId: !Ref LatestAmiId
       BlockDeviceMappings:
