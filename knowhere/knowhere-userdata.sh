@@ -29,9 +29,8 @@
 
 ### config ###
 echo 'setting environment configuration'
-AWS_DEFAULT_REGION=$(aws ssm get-parameter --name "defaultRegion")
-S3_BUCKET_NAME=$(aws ssm get-parameter --name "/gamehost/s3bucket")
-SECRET_PATH=$(aws ssm get-parameter --name "/gamehost/knowhere/secretPath")
+S3_BUCKET_NAME=$(aws ssm get-parameter --name "/gamehost/s3bucket" --region us-east-1)
+SECRET_PATH=$(aws ssm get-parameter --name "/gamehost/knowhere/secretPath" --region us-east-1)
 # R53_HOSTEDZONE=""
 LGSM_DIR="/opt/linuxgsm"
 # MINECRAFT_SAVE_FILE="/saves/minecraft/ce_plays_mc.zip"
