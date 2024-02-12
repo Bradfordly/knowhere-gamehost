@@ -5,15 +5,15 @@ Parameters:
   LatestAmiId:
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     Default: '/aws/service/canonical/ubuntu/server/jammy/stable/current/amd64/hvm/ebs-gp2/ami-id'
-  UserdataS3BucketPath:
-    Type: 'String'
-    Default: '{{resolve:ssm:/gamehost/s3bucket/path/userdata:1}}'
+  S3BucketPath:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/gamehost/s3bucket/path'
   S3BucketArn:
-    Type: 'String'
-    Default: '{{resolve:ssm:/gamehost/s3bucket/arn:1}}'
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/gamehost/s3bucket/arn'
   SSMPolicyArn:
-    Type: 'String'
-    Default: '{{resolve:ssm:/managedPolicyArns/ssmEC2Role:1}}'
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/managedPolicyArns/ssmEC2Role'
 
 Resources:
   knowhereIAMRole:
@@ -97,7 +97,7 @@ Resources:
             #!/bin/bash -xe
             apt update
             apt install awscli -y
-            aws s3 cp ${UserdataS3BucketPath} /opt/knowhere-userdata.sh
+            aws s3 cp ${S3BucketPath}/knowhere-userdata.sh /opt/knowhere-userdata.sh
             chmod +x /opt/knowhere-userdata.sh
             bash /opt/knowhere-userdata.sh
       InstanceType: m5.large
