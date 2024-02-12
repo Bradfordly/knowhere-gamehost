@@ -57,11 +57,13 @@ echo 'server list dictionary set successfully'
 for server in "${!serverList[@]}"
 do
     echo "next game server to install: $server"
-    pw=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/${SECRET_PATH}/linuxgsm/${server}")
+    pw=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/${SECRET_PATH}/linuxgsm/${server}" --region us-east-1)
     useradd $server; echo -e ${pw[$server]} | passwd $server
     ufw allow ${serverList[$server]}
-    bash linuxgsm.sh $server
-    bash $server auto-install
+    /bin/su -c "${LGSM_DIR}/linuxgsm.sh" - $server
+    /bin/su -c "${LGSM_DIR}/${$server} auto-install" - $server
+    # bash linuxgsm.sh $server
+    # bash $server auto-install
 done
 
 ### palworld setup ###
