@@ -57,11 +57,11 @@ echo 'server list dictionary set successfully'
 for server in "${!serverList[@]}"
 do
     echo "next game server to install: $server"
-    pw=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/${SECRET_PATH}/linuxgsm/${server}" --with-decryption --region us-east-1)
-    useradd $server; echo -e ${pw['Parameter']['Value'][$server]} | passwd $server
+    pw=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/$SECRET_PATH/linuxgsm/$server" --with-decryption --region us-east-1)
+    useradd $server; echo -e ${pw['Parameter']['Value'][${server}]} | passwd $server
     ufw allow ${serverList[$server]}
-    /bin/su -c "${LGSM_DIR}/linuxgsm.sh" - $server
-    /bin/su -c "${LGSM_DIR}/${server} auto-install" - $server
+    /bin/su -c "$LGSM_DIR/linuxgsm.sh" - $server
+    /bin/su -c "$LGSM_DIR/${server} auto-install" - $server
     # bash linuxgsm.sh $server
     # bash $server auto-install
 done
