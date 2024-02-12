@@ -92,14 +92,13 @@ Resources:
       SecurityGroups:
         - !Ref knowhereSecurityGroup
       UserData:
-        "Fn::Base64":
-          "Fn::Sub": |
-            #!/bin/bash
-            apt update
-            apt install awscli -y
-            aws s3 cp ${S3BucketPath}/knowhere-userdata.sh /opt/knowhere-userdata.sh
-            chmod +x /opt/knowhere-userdata.sh
-            bash /opt/knowhere-userdata.sh
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          apt update
+          apt install awscli -y
+          aws s3 cp ${S3BucketPath}/knowhere-userdata.sh /opt/knowhere-userdata.sh
+          chmod +x /opt/knowhere-userdata.sh
+          bash /opt/knowhere-userdata.sh
       InstanceType: m5.large
       ImageId: !Ref LatestAmiId
       BlockDeviceMappings:
