@@ -30,7 +30,6 @@
 ### config ###
 echo 'setting environment configuration'
 S3_BUCKET_NAME=$(aws ssm get-parameter --name "/gamehost/s3bucket" --region us-east-1)
-SECRET_PATH=$(aws ssm get-parameter --name "/gamehost/knowhere/secretPath" --region us-east-1)
 # R53_HOSTEDZONE=""
 LGSM_DIR="/opt/linuxgsm"
 # MINECRAFT_SAVE_FILE="/saves/minecraft/ce_plays_mc.zip"
@@ -57,11 +56,11 @@ echo 'server list dictionary set successfully'
 for server in "${!serverList[@]}"
 do
     echo "next game server to install: $server"
-    pw=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/$SECRET_PATH/linuxgsm/$server" --with-decryption --region us-east-1)
-    useradd $server; echo -e ${pw['Parameter']['Value'][${server}]} | passwd $server
-    ufw allow ${serverList[$server]}
+    pw=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/gamehost/knowhere/linuxgsm/$server" --with-decryption --region us-east-1)
+    useradd $server; echo -e $pw['Parameter']['Value'][$server] | passwd $server
+    ufw allow $serverList[$server]
     /bin/su -c "$LGSM_DIR/linuxgsm.sh" - $server
-    /bin/su -c "$LGSM_DIR/${server} auto-install" - $server
+    /bin/su -c "$LGSM_DIR/$server auto-install" - $server
     # bash linuxgsm.sh $server
     # bash $server auto-install
 done

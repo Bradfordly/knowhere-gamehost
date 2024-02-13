@@ -49,6 +49,7 @@ Resources:
                 - "ssm:DescribeParameters"
                 - "ssm:GetParameters"
                 - "ssm:GetParameter"
+                - "secretsmanager:GetSecretValue"
               Resource: "*"
             - Effect: Allow
               Action:
