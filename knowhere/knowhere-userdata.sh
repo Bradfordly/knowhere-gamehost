@@ -43,6 +43,7 @@ chmod +x linuxgsm.sh
 mkdir ${LGSM_DIR}
 mv linuxgsm.sh ${LGSM_DIR}/linuxgsm.sh
 cd ${LGSM_DIR}
+mkdir lgsm
 echo 'linuxgsm scripts staged successfully'
 
 ### define game list ###
@@ -57,14 +58,22 @@ for server in "${!serverList[@]}"
 do
     echo "next game server to install: $server"
     pw=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/gamehost/knowhere/linuxgsm/$server" --with-decryption --region us-east-1)
-    useradd $server; echo -e $pw['Parameter']['Value'][$server] | passwd $server
-    ufw allow $serverList[$server]
+    useradd $server
+    echo $server:$server"$pw['Parameter']['Value'][$server]" | chpasswd
+    #ufw allow $serverList[$server]
     /bin/su -c "$LGSM_DIR/linuxgsm.sh" - $server
     /bin/su -c "$LGSM_DIR/$server auto-install" - $server
     # bash linuxgsm.sh $server
     # bash $server auto-install
 done
 
+
+for i in $( cat users.txt ); do
+    useradd $i
+    echo "user $i added successfully!"
+    echo $i:$i"123" | chpasswd
+    echo "Password for user $i changed successfully"
+done
 ### palworld setup ###
 # TODO: import save file
 
