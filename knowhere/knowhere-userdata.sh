@@ -59,8 +59,8 @@ do
     echo "next game server to install: $server"
     #pw=$(aws ssm get-parameter --name "/aws/reference/secretsmanager/gamehost/knowhere/linuxgsm/$server" --with-decryption --region us-east-1)
     password=$server@123
-    useradd $server
-    echo $password | passwd --stdin $server
+    adduser $server --disabled-password
+    echo "$server:$password" | chpasswd
     #ufw allow $serverList[$server]
     /bin/su -c "$LGSM_DIR/linuxgsm.sh" - $server
     /bin/su -c "$LGSM_DIR/$server auto-install" - $server
