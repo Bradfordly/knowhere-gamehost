@@ -40,10 +40,6 @@ echo 'environment configuration complete'
 echo 'staging linuxgsm scripts'
 curl -Lo linuxgsm.sh https://linuxgsm.sh
 chmod +x linuxgsm.sh
-mkdir ${LGSM_DIR}
-mv linuxgsm.sh ${LGSM_DIR}/linuxgsm.sh
-cd ${LGSM_DIR}
-mkdir lgsm
 echo 'linuxgsm scripts staged successfully'
 
 ### define game list ###
@@ -61,9 +57,11 @@ do
     password=$server@123
     adduser $server --disabled-password
     echo "$server:$password" | chpasswd
+    chown -R "$server:$server" /home/$server
+    cp linuxgsm.sh /home/$server/linuxgsm.sh
     #ufw allow $serverList[$server]
-    /bin/su -c "$LGSM_DIR/linuxgsm.sh" - $server
-    /bin/su -c "$LGSM_DIR/$server auto-install" - $server
+    /bin/su -c "/home/$server/linuxgsm.sh" - $server
+    /bin/su -c "/home/$server/$server auto-install" - $server
     # bash linuxgsm.sh $server
     # bash $server auto-install
 done
