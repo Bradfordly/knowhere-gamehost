@@ -60,7 +60,7 @@ do
     chown -R "$server:$server" /home/$server
     cp linuxgsm.sh /home/$server/linuxgsm.sh
     #ufw allow $serverList[$server]
-    /bin/su -c "/home/$server/linuxgsm.sh" - $server
+    /bin/su -c "/home/$server/linuxgsm.sh $server" - $server
     /bin/su -c "/home/$server/$server auto-install" - $server
     # bash linuxgsm.sh $server
     # bash $server auto-install
