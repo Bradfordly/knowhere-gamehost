@@ -44,5 +44,5 @@ do
     cp linuxgsm.sh /home/$server/linuxgsm.sh
     /bin/su -c "/home/$server/linuxgsm.sh $server" - $server
     bash /home/$server/$server install
-    /bin/su -c "/home/$server/$server auto-install" - $server
+    #/bin/su -c "/home/$server/$server auto-install" - $server
 done
