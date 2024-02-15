@@ -13,6 +13,7 @@ do
     port=$serverList[$server]
     adduser $server --disabled-password
     echo "$server:$password" | chpasswd
+    echo "$server  ALL=(ALL:ALL) ALL" >> /etc/sudoers
     chown -R "$server:$server" /home/$server
     cp linuxgsm.sh /home/$server/linuxgsm.sh
     ufw allow $port
