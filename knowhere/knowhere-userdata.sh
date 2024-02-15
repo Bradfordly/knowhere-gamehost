@@ -60,19 +60,11 @@ do
     chown -R "$server:$server" /home/$server
     cp linuxgsm.sh /home/$server/linuxgsm.sh
     #ufw allow $serverList[$server]
+    usermod -aG sudo $server
     /bin/su -c "/home/$server/linuxgsm.sh $server" - $server
     /bin/su -c "/home/$server/$server auto-install" - $server
-    # bash linuxgsm.sh $server
-    # bash $server auto-install
 done
 
-
-for i in $( cat users.txt ); do
-    useradd $i
-    echo "user $i added successfully!"
-    echo $i:$i"123" | chpasswd
-    echo "Password for user $i changed successfully"
-done
 ### palworld setup ###
 # TODO: import save file
 
