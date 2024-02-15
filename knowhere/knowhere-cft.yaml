@@ -71,7 +71,7 @@ Resources:
             GroupName: "Knowhere EC2 Access"
             GroupDescription: "Allows specific traffic in/out for SSH and game servers"
             SecurityGroupIngress:
-              - IpProtocol: tcp
+              - IpProtocol: udp
                 FromPort: 27015
                 ToPort: 27015
                 CidrIp: 0.0.0.0/0
@@ -81,7 +81,7 @@ Resources:
                 ToPort: 25565
                 CidrIp: 0.0.0.0/0
                 Description: Minecraft
-              - IpProtocol: tcp
+              - IpProtocol: udp
                 FromPort: 8211
                 ToPort: 8211
                 CidrIp: 0.0.0.0/0
