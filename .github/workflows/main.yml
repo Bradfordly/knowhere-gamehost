@@ -14,12 +14,14 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v4
+      
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
           role-session-name: githubactions
           aws-region: ${{ secrets.AWS_REGION }}
+  
       - name: configure environment name
         id: env-name
         env:
@@ -28,18 +30,22 @@ jobs:
           ENVIRONMENT=`echo $REPO | tr "/" "-"`
           echo "Environment name: $ENVIRONMENT"
           echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      
       - name: upload cft & user data script to s3
         run: |
-          aws s3 cp ./knowhere/knowhere-cft.yaml ${{ secrets.AWS_S3_PATH }}/knowhere-cft.yaml
-          aws s3 cp ./knowhere/knowhere-userdata.sh ${{ secrets.AWS_S3_PATH }}/knowhere-userdata.sh
+          aws s3 cp ./knowhere/knowhere-cft.yaml ${{ secrets.AWS_S3_PATH }}/knowhere-$branch-cft.yaml
+      
       - name: deploy to aws cloudformation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: cft-knowhere-ec2
+          name: knowhere-$branch
           capabilities: CAPABILITY_NAMED_IAM
-          template: ${{ secrets.AWS_S3_URL }}/knowhere-cft.yaml
+          template: ${{ secrets.AWS_S3_URL }}/knowhere-$branch-cft.yaml
+          parameter-overrides: >-
+            Environment=$branch
+      
       - name: delete failed stack
         if: failure()
         run: |
-          aws cloudformation delete-stack --stack-name cft-knowhere-ec2
-          
+          aws cloudformation delete-stack --stack-name knowhere-$branch
