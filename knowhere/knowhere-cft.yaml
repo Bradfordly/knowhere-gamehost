@@ -14,56 +14,19 @@ Parameters:
   SSMPolicyArn:
     Type: 'AWS::SSM::Parameter::Value<String>'
     Default: '/managedPolicyArns/ssmEC2Role'
-
+  EC2RoleArn:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/managedPolicyArns/knowhereEC2Role'
+  Environment:
+    Type: String
+    Default: develop
 Resources:
-  knowhereIAMRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: 'iam-knowhere-access'
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: 'Allow'
-          Principal:
-            Service:
-            - 'ec2.amazonaws.com'
-          Action:
-          - 'sts:AssumeRole'
-      ManagedPolicyArns:
-        - !Ref SSMPolicyArn
-      Policies:
-      - PolicyName: 'iam-knowhere-access-policy'
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Action:
-                - "s3:PutObject"
-                - "s3:GetObject"
-                - "s3:GetObjectVersion"
-                - "s3:DeleteObject"
-                - "s3:DeleteObjectVersion"
-              Resource: !Sub '${S3BucketArn}/*'
-            - Effect: Allow
-              Action:
-                - "ssm:DescribeParameters"
-                - "ssm:GetParameters"
-                - "ssm:GetParameter"
-                - "secretsmanager:GetSecretValue"
-              Resource: "*"
-            - Effect: Allow
-              Action:
-                - "kms:Decrypt"
-                - "kms:Encrypt"
-                - "kms:GenerateDataKey"
-              Resource: "*"
-  
   knowhereInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Path: /
       Roles:
-        - !Ref knowhereIAMRole
+        - !Ref EC2RoleArn
   
   knowhereSecurityGroup:
         Type: AWS::EC2::SecurityGroup
@@ -102,11 +65,10 @@ Resources:
         Fn::Base64:
           !Sub |
             #!/bin/bash -xe
-            apt update
-            apt install awscli -y
-            aws s3 cp ${S3BucketPath}/knowhere-userdata.sh /opt/knowhere-userdata.sh
-            chmod +x /opt/knowhere-userdata.sh
-            bash /opt/knowhere-userdata.sh
+            wget https://raw.githubusercontent.com/Bradfordly/bradfordly-gamehost/${Environment}/knowhere/knowhere-userdata.sh
+            mv knowhere-userdata.sh /opt/knowhere/knowhere-userdata.sh
+            chmod +x /opt/knowhere/knowhere-userdata.sh
+            bash /opt/knowhere/knowhere-userdata.sh
       InstanceType: m5.large
       ImageId: !Ref LatestAmiId
       BlockDeviceMappings:
@@ -118,5 +80,5 @@ Resources:
             Encrypted: 'true'
       Tags:
         - Key: Name
-          Value: knowhere
+          Value: !Sub "knowhere-${Environment}"
   
