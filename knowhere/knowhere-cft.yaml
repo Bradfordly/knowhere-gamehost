@@ -12,6 +12,12 @@ Parameters:
     Type: String
     Default: "{{resolve:ssm:/gamehost/s3bucket/path:1}}"
   SSMPolicyArn:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/managedPolicyArns/ssmEC2Role'
+  EC2RoleArn:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/managedPolicyArns/knowhereEC2Role'
+  Branch:
     Type: String
     Default: "{{resolve:ssm:/managedPolicyArns/ssmEC2Role:1}}"
 
@@ -96,10 +102,14 @@ Resources:
       SecurityGroups:
         - !Ref knowhereSecurityGroup
       UserData:
-          "Fn::Base64":
-            "Fn::Sub": |
-              #!/bin/bash
-              aws s3 cp ${S3BucketPath}/knowhere-userdata.sh - | bash -s
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            branch=${Branch}
+            wget https://raw.githubusercontent.com/Bradfordly/bradfordly-gamehost/${Branch}/knowhere/knowhere-userdata.sh
+            mv knowhere-userdata.sh /opt/knowhere/knowhere-userdata.sh
+            chmod +x /opt/knowhere/knowhere-userdata.sh
+            bash . /opt/knowhere/knowhere-userdata.sh
       InstanceType: m5.large
       ImageId: !Ref LatestAmiId
       BlockDeviceMappings:

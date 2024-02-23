@@ -37,7 +37,10 @@ jobs:
         with:
           name: cft-knowhere-ec2
           capabilities: CAPABILITY_NAMED_IAM
-          template: ${{ secrets.AWS_S3_URL }}/knowhere-cft.yaml
+          template: ${{ secrets.AWS_S3_URL }}/knowhere-$branch-cft.yaml
+          parameter-overrides: >-
+            Branch=$branch
+      
       - name: delete failed stack
         if: failure()
         run: |
