@@ -34,18 +34,18 @@ jobs:
       
       - name: upload cft & user data script to s3
         run: |
-          aws s3 cp ./knowhere/knowhere-cft.yaml ${{ secrets.AWS_S3_PATH }}/knowhere-${branch}-cft.yaml
+          aws s3 cp ./knowhere/knowhere-cft.yaml "${{ secrets.AWS_S3_PATH }}/knowhere-${branch}-cft.yaml"
       
       - name: deploy to aws cloudformation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: knowhere-${branch}
+          name: "knowhere-${branch}"
           capabilities: CAPABILITY_NAMED_IAM
-          template: ${{ secrets.AWS_S3_URL }}/knowhere-${branch}-cft.yaml
+          template: "${{ secrets.AWS_S3_URL }}/knowhere-${branch}-cft.yaml"
           parameter-overrides: >-
-            Branch=${branch}
+            Branch="${branch}"
       
       - name: delete failed stack
         if: failure()
         run: |
-          aws cloudformation delete-stack --stack-name knowhere-${branch}
+          aws cloudformation delete-stack --stack-name "knowhere-${branch}"
