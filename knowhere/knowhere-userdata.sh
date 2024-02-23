@@ -2,6 +2,7 @@
 
 ### install dependencies ###
 depList=(
+    awscli
     curl
     wget
     file
@@ -21,24 +22,21 @@ depList=(
     lib32gcc-s1
     lib32stdc++6
     libsdl2-2.0-0:i386
-    steamcmd
 )
 dpkg --add-architecture i386
 apt update
 apt install ${depList[@]} -y
 
-### linuxgsm setup ###
+### stage linuxgsm script ###
 curl -Lo linuxgsm.sh https://linuxgsm.sh
 chmod +x linuxgsm.sh
-mv linuxgsm.sh ${LGSM_DIR}
-cd ${LGSM_DIR}
 
-### define game list ###
-declare -A serverList
-serverList[pwserver]=8211 #palworld
-serverList[mcserver]=25565 #minecraft
-
-### install game servers ###
+### install game server files ###
+serverList=(
+    pwserver    #Palworld
+    mcserver    #Minecraft
+    vhserver    #Valheim
+)
 for server in "${!serverList[@]}"
 do
     
