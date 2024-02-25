@@ -1,6 +1,6 @@
 # Knowhere
-![GitHub Release](https://img.shields.io/github/v/release/Bradfordly/bradfordly-gamehost)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Bradfordly/bradfordly-gamehost/main.yml)
+![GitHub Release](https://img.shields.io/github/v/release/Bradfordly/knowhere-gamehost)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Bradfordly/knowhere-gamehost/main.yml)
 
 ### AWS Instance Management System
 
