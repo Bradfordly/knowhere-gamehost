@@ -1,0 +1,8 @@
+# v0.0.1
+
+**New Features - Bootstrap Script**
+
+The first piece of the puzzle, so to speak. This initial release is the script which runs when an instance is launched. Should the need ever arise to terminate and redeploy a new instance.
+- Installs all dependencies
+- Updates DNS with new public IP
+- Updates AWS Systems Manager configuration

@@ -1,4 +1,4 @@
-name: deploy Knowhere to AWS
+name: Deploy Knowhere to AWS
 on:
   push:
     branches: [ "develop", "main" ] 
